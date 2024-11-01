@@ -2,7 +2,7 @@
 
 from ninja import NinjaAPI, Router
 from fotografo.models import Ensaio, Fotografo ,EnsaioFoto
-from fotografo.schemas import RegisterSchema, AuthSchema, EnsaioCreateSchema, EnsaioOutSchema ,EnsaioFotoCreateSchema ,EnsaioFotoOutSchema
+from fotografo.schemas import RegisterSchema, AuthSchema,AcessoEnsaioSchema,  EnsaioCreateSchema, EnsaioOutSchema ,EnsaioFotoCreateSchema ,EnsaioFotoOutSchema
 from ninja.security import HttpBearer
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.shortcuts import get_object_or_404
 from ninja.files import UploadedFile
 from typing import List
+from django.contrib.auth.hashers import check_password
 import base64
 
 # Instância principal da API Ninja
@@ -68,7 +69,7 @@ def list_ensaios(request):
 def create_ensaio(request, ensaio_data: EnsaioCreateSchema):
     fotografo = request.user  # Usa o usuário autenticado diretamente do token JWT
 
-    # Cria o ensaio associado ao fotógrafo autenticado
+    # Cria o ensaio associado ao fotógrafo autenticadoAcessoEnsaioSchema
     ensaio = Ensaio.objects.create(
         descricao=ensaio_data.descricao,
         val_ensaio=ensaio_data.val_ensaio,
@@ -133,6 +134,21 @@ def delete_ensaio_foto(request, foto_id: int):
 def list_ensaio_fotos(request, ensaio_id: int):
     # Verifica se o ensaio existe
     ensaio = get_object_or_404(Ensaio, id=ensaio_id)
+
+    # Busca todas as fotos associadas ao ensaio
+    fotos = EnsaioFoto.objects.filter(ensaio=ensaio)
+
+    return fotos
+
+# Endpoint público para acessar o ensaio e suas fotos com validação de senha
+@router.post("/ensaio/{ensaio_id}/acesso/", response=List[EnsaioFotoOutSchema])
+def acesso_ensaio(request, ensaio_id: int, acesso_data: AcessoEnsaioSchema):
+    # Verifica se o ensaio existe
+    ensaio = get_object_or_404(Ensaio, id=ensaio_id)
+
+    # Valida a senha de acesso
+    if not check_password(acesso_data.senha_acesso, ensaio.senha_acesso):
+        return {"detail": "Senha incorreta"}, 403  # Retorna erro 403 se a senha estiver incorreta
 
     # Busca todas as fotos associadas ao ensaio
     fotos = EnsaioFoto.objects.filter(ensaio=ensaio)

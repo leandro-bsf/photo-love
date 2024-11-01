@@ -26,10 +26,10 @@ class Ensaio(models.Model):
     data_criacao = models.DateTimeField(default=timezone.now)
     val_foto_extra = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     data_escolha = models.DateField(null=True, blank=True)
-    foto_capa = models.ImageField(upload_to="capas_ensaios/", null=True, blank=True)
+    foto_capa = models.BinaryField(null=True, blank=True)
     fotografo = models.ForeignKey(Fotografo, on_delete=models.CASCADE, related_name="ensaios")
     total_fotos_escolhidas = models.IntegerField(default=0)
-
+    senha_acesso = models.CharField(max_length=128)
     def __str__(self):
         return f"{self.descricao} - {self.fotografo.nome}"
 

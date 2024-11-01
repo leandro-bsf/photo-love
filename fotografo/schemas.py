@@ -59,3 +59,6 @@ class EnsaioFotoOutSchema(Schema):
         if obj.foto:
             return base64.b64encode(obj.foto).decode("utf-8")
         return None
+    
+class AcessoEnsaioSchema(Schema):
+    senha_acesso: str
