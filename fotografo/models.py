@@ -10,10 +10,7 @@ class Fotografo(models.Model):
     fone = models.CharField(max_length=15, blank=True, null=True)
     email = models.EmailField(unique=True)
 
-    def save(self, *args, **kwargs):
-        if self.pk is None:  # Somente criptografa ao criar um novo registro
-            self.senha = make_password(self.senha)
-        super().save(*args, **kwargs)
+  
 
     def __str__(self):
         return self.nome

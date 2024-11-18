@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'fotografo',
 ]
 
@@ -56,10 +57,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', 
 ]
 
 ROOT_URLCONF = 'photo_love.urls'
-
+SECRET_KEY = 'AlVe_FBlgHrdvF20QfsIV6zihm2Ewn6Qk0EaTlCm67mkXFN1A_YM236yDvqiQpzXiD4' 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -77,8 +79,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'photo_love.wsgi.application'
+CORS_ALLOW_ALL_ORIGINS = True
 
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Adapte se seu frontend estiver rodando em uma porta diferente
+]
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -86,14 +91,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Fotografia',  # Substitua pelo nome do seu banco de dados
-        'USER': 'postgres',         # Substitua pelo usuário do PostgreSQL
-        'PASSWORD': '1710',       # Substitua pela senha do PostgreSQL
-        'HOST': 'localhost',       # Ou o IP do servidor do banco de dados, se não for local
+        'USER': 'imed_dba',         # Substitua pelo usuário do PostgreSQL
+        'PASSWORD': 'imed@312',       # Substitua pela senha do PostgreSQL
+        'HOST': '85.209.93.14',       # Ou o IP do servidor do banco de dados, se não for local
         'PORT': '5432',            # A porta padrão do PostgreSQL é 5432
     }
 }
 
-
+ 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
